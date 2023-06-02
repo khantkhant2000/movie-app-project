@@ -44,8 +44,3 @@ const String kBirthday = "Birthday";
 const String kDeadDay = "DeadDay";
 const String kGender = "Gender";
 const String kPopularity = "Popularity";
-
-///Specific Information of Robert Downey Jr.
-const String kPlaceOfBornOfRobert = "New York City, U.S";
-const String kBirthdayOfRobert = "April 4, 1965";
-const double kPopularOfRobert = 1234.3524;

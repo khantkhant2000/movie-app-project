@@ -16,8 +16,9 @@ class MovieTypeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(right: kSP10x),
       alignment: Alignment.center,
-      width: kSP80x,
+      width: kSP100x,
       height: kSP45x,
       decoration: BoxDecoration(
         color: color,

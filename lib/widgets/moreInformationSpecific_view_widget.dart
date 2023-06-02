@@ -15,21 +15,19 @@ class MoreInformationSpecificViewWidget extends StatelessWidget {
   final String placeOfBirth;
   final String birthday;
   final String deadDay;
-  final bool gender;
+  final int gender;
   final double popularity;
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         MoreInformationView(about: kPlaceOfBirth, aboutSpecific: placeOfBirth),
         MoreInformationView(about: kBirthday, aboutSpecific: birthday),
         MoreInformationView(about: kDeadDay, aboutSpecific: deadDay),
         MoreInformationView(
-            about: kGender,
-            aboutSpecific: (gender == true) ? "Male" : "Female"),
+            about: kGender, aboutSpecific: (gender == 2) ? "Male" : "Female"),
         MoreInformationView(about: kPopularity, aboutSpecific: "$popularity"),
       ],
     );

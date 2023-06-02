@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app_project_test/widgets/easy_text_widget.dart';
-
 import '../constant/dimens.dart';
 
 class MoreInformationView extends StatelessWidget {
@@ -16,13 +15,14 @@ class MoreInformationView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-            height: kSP30x,
-            width: kSP165x,
+            height: kSP40x,
+            width: kSP130x,
             child: EasyText(
               text: about,
               fontWeight: FontWeight.w400,
             )),
-        EasyText(text: aboutSpecific, fontWeight: FontWeight.w400),
+        Flexible(
+            child: EasyText(text: aboutSpecific, fontWeight: FontWeight.w400)),
       ],
     );
   }

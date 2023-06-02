@@ -19,6 +19,7 @@ const Color kStarIconColor = Color(0xFfFFD020);
 
 ///PlayIcon Bottom BackGround Color
 const Color kPlayIconBackgroundColor = Color(0xFFFF0202);
+const Color kIconBackArrowColor = Color(0xFFFF0202);
 
 ///Movie name and View text color
 const Color kMovieNameTextColor = Colors.white;
@@ -40,3 +41,5 @@ const Color kMyDividerColor = Colors.white;
 
 ///sliver app bar BackGround Color
 const Color kSliverAppBarBackgroundColor = Colors.black;
+
+const Color kMovieTypeGenresColor = Color(0xFFB3B3B3);

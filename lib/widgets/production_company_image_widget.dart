@@ -1,5 +1,4 @@
-// ignore_for_file: camel_case_types
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app_project_test/constant/dimens.dart';
 
@@ -7,28 +6,41 @@ import '../constant/colors.dart';
 import '../constant/strings.dart';
 import 'easy_text_widget.dart';
 
-class PI_DefaultWidget extends StatelessWidget {
-  const PI_DefaultWidget({Key? key}) : super(key: key);
-
+class PCWidget extends StatelessWidget {
+  const PCWidget({Key? key, required this.imageURL, required this.name})
+      : super(key: key);
+  final String imageURL;
+  final String name;
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(kSP5x),
+    return Padding(
+      padding: const EdgeInsets.only(left: kSP12x),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(kSP30x), right: Radius.circular(kSP30x)),
-            child: Image(
+          Padding(
+            padding: const EdgeInsets.only(left: kSP5x),
+            child: SizedBox(
               width: kSP90x,
-              height: kSP70x,
-              image: AssetImage(kPlaceHolderImage),
-              fit: BoxFit.cover,
+              height: kSP80x,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(kSP20x)),
+                child: CachedNetworkImage(
+                  imageUrl: imageURL,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Image.asset(
+                    kPlaceHolderImage,
+                    fit: BoxFit.cover,
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+              ),
             ),
           ),
-          SizedBox(height: kSP10x),
+          const SizedBox(height: kSP10x),
           EasyText(
-            text: kMarvelStudioText,
+            text: name,
             fontSize: kFS12x,
             fontWeight: FontWeight.w400,
             textColor: kMarvelStudioTextColor,

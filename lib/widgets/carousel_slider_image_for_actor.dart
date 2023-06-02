@@ -1,25 +1,32 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app_project_test/constant/strings.dart';
+import '../constant/api_constant.dart';
 import '../constant/dimens.dart';
+import '../data/vos/actor_result_vo/actor_result_vo.dart';
+import '../pages/actor_and_actress_info_page.dart';
+import 'easy_text_widget.dart';
 
-class CarouselSliderImage extends StatelessWidget {
-  const CarouselSliderImage(
-      {super.key,
-      this.aspectRatio = kCarouselSliderImageAspectRatio,
-      this.unLargeCenterPage = true,
-      required this.imagesURL,
-      this.autoPlayImage = true,
-      this.viewPortFraction = kCarouselSliderImageviewPortFraction,
-      required this.widget});
-  final List<String> imagesURL;
+class CarouselSliderForActor extends StatelessWidget {
+  const CarouselSliderForActor({
+    super.key,
+    this.aspectRatio = kCarouselSliderImageAspectRatio,
+    this.unLargeCenterPage = true,
+    required this.imagesURL,
+    this.autoPlayImage = true,
+    this.viewPortFraction = kCarouselSliderImageviewPortFraction,
+    required this.id,
+  });
+
+  final List<ActorResultsVO>? imagesURL;
   final double aspectRatio;
   final bool unLargeCenterPage;
   final bool autoPlayImage;
   final double viewPortFraction;
-  final Widget widget;
+  final int id;
   @override
   Widget build(BuildContext context) {
+    // print("this is index of actor name=====>$imagesURL");
     return CarouselSlider(
       options: CarouselOptions(
         aspectRatio: aspectRatio,
@@ -36,7 +43,7 @@ class CarouselSliderImage extends StatelessWidget {
         enlargeFactor: kEnlargeFactor,
         scrollDirection: Axis.horizontal,
       ),
-      items: imagesURL.map((url) {
+      items: imagesURL?.map((url) {
         return Stack(
           alignment: Alignment.center,
           children: [
@@ -58,7 +65,7 @@ class CarouselSliderImage extends StatelessWidget {
                           );
                         }
                       },
-                      url,
+                      "$kNetWortPosterPath${url.profilePath}",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -83,25 +90,23 @@ class CarouselSliderImage extends StatelessWidget {
                 ),
               ),
             ),
-            // const CircleAvatar(
-            //   backgroundColor: kPlayIconBackgroundColor,
-            //   child: Icon(
-            //     Icons.play_arrow_outlined,
-            //   ),
-            // ),
-            widget,
+            Padding(
+              padding: const EdgeInsets.only(top: kSP280x),
+              child: EasyText(
+                text: url.name ?? "",
+              ),
+            ),
+            Positioned.fill(child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ActorDetailPage(
+                          id: url.id ?? 0,
+                        )));
+              },
+            )),
           ],
         );
       }).toList(),
     );
   }
 }
-// CachedNetworkImage(
-//            fit: BoxFit.cover,
-//            placeholder: (context, url) => Image.asset(
-//              kPlaceHolderImage,
-//              fit: BoxFit.cover,
-//            ),
-//            errorWidget: (context, url, error) => const Icon(Icons.error),
-//            imageUrl: kPlaceHolderImage,
-//          ),

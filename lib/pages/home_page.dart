@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../constant/colors.dart';
+import '../data/model/movie_model.dart';
+import '../data/model/movie_model_impl.dart';
 import '../view_items/home_page_view_items/home_page_view_items.dart';
+
+MovieModel genresModel = MovieModelImpl();
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);

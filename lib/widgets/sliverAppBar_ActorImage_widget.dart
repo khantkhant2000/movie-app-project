@@ -28,6 +28,24 @@ class SliverAppBarActorImageDefaultWidget extends StatelessWidget {
           ),
           errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
+        // Positioned(
+        //   left: kSP0x,
+        //   bottom: kSP0x,
+        //   right: kSP0x,
+        //   height: colorOpacityHeight,
+        //   child: Container(
+        //     decoration: BoxDecoration(
+        //       gradient: LinearGradient(
+        //         begin: Alignment.topCenter,
+        //         end: Alignment.bottomCenter,
+        //         colors: [
+        //           Colors.transparent,
+        //           Colors.black.withOpacity(kCO_09x),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ]),
     );
   }
