@@ -63,14 +63,18 @@ class SliverAppBarMovieImageDefaultWidget extends StatelessWidget {
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                //ဒီနေရာမှာ GenresMovieNameWidget ထဲမှာ ListViewBuilder ကြောင့် error ဖြစ်နေတာပါ
+                // Row ထဲမှာ ListViewBuilder ကိုသုံးရင် width height လိုပါတယ်
+                // အဲ့တော့ အာ့က်ိုမသုံးပဲ genreList ကို Row ထဲမှာ map လုပ်ပြီးပြထားပါတယ်
                 Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                        child: GenresMovieNameWidget(genresList: genresList)),
-                  ],
+                  children: genresList
+                      .map((e) => EasyText(
+                          text: "${e.name} |",
+                          fontSize: 12,
+                          textColor: kMovieTypeGenresColor))
+                      .toList(),
                 ),
                 EasyText(
                     text: "${(movieDetailResponse?.runtime ?? 0) ~/ 60} h  ",
