@@ -11,43 +11,37 @@ class MovieNameAndRatingView extends StatelessWidget {
   const MovieNameAndRatingView({
     Key? key,
     required this.imageURL,
-    this.height = kMovieNameAndRatingDefaultHeight,
-    this.width = kMovieNameAndRatingDefaultWidth,
+    this.heightForImage = kMovieNameAndRatingDefaultHeight,
+    this.widthForImage = kMovieNameAndRatingDefaultWidth,
     this.heightForColorOpacity = kSP260x,
     required this.textForRating,
     required this.textForVotes,
     required this.movieName,
-    this.widthForImage = 200,
     required this.movieId,
+    this.widthForBox = kSP180x,
   }) : super(key: key);
   final String imageURL;
   final double textForRating;
   final int textForVotes;
   final String movieName;
-  final double height;
-  final double heightForColorOpacity;
-  final double width;
+  final double heightForImage;
   final double widthForImage;
+  final double heightForColorOpacity;
+  final double widthForBox;
+
   final int movieId;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(kSP10x),
       child: SizedBox(
-        width: width,
+        width: widthForBox,
         child: Stack(alignment: Alignment.bottomLeft, children: [
-          // Positioned.fill(child: GestureDetector(
-          //   onTap: () {
-          //     Navigator.of(context).push(MaterialPageRoute(
-          //         builder: (context) => MovieDetailPage(
-          //               movieId: movieId,
-          //             )));
-          //   },
-          // )),
-          ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(kSP20x)),
-            child: SizedBox(
-              width: widthForImage,
+          SizedBox(
+            height: heightForImage,
+            width: widthForImage,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(kSP20x)),
               child: CachedNetworkImage(
                 imageUrl: kNetWortPosterPath + imageURL,
                 fit: BoxFit.cover,
@@ -90,23 +84,28 @@ class MovieNameAndRatingView extends StatelessWidget {
             ),
           ),
           const Positioned(
-            bottom: kSP10x,
+            bottom: kSP15x,
             left: kSP10x,
             child: Icon(
+              size: kSP19x,
               Icons.star_border_outlined,
               color: kStarIconColor,
             ),
           ),
           Positioned(
-              bottom: kSP12x,
-              left: kSP45x,
+              bottom: kSP17x,
+              left: kSP40x,
               child: EasyText(
-                  text: '$textForRating', textColor: kRatingAndViewTextColor)),
+                text: '$textForRating',
+                textColor: kRatingAndViewTextColor,
+                fontSize: kFS13x,
+              )),
           Positioned(
-            bottom: kSP12x,
-            right: kSP30x,
+            bottom: kSP17x,
+            left: kSP80x,
             child: EasyText(
                 text: " $textForVotes votes",
+                fontSize: kFS13x,
                 textColor: kRatingAndViewTextColor),
           ),
           Positioned.fill(child: GestureDetector(

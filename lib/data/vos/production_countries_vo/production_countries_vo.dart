@@ -1,13 +1,19 @@
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../constant/hive_constant.dart';
 
 part 'production_countries_vo.g.dart';
 
 @JsonSerializable()
+@HiveType(typeId: kHiveTypeMovieDetailProductionCountriesID)
 class ProductionCountriesVO {
   @JsonKey(name: 'iso_3166_1')
+  @HiveField(0)
   String? iso_3166_1;
 
   @JsonKey(name: 'name')
+  @HiveField(1)
   String? name;
 
   ProductionCountriesVO(this.iso_3166_1, this.name);

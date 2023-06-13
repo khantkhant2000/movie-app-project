@@ -6,19 +6,15 @@ import '../constant/api_constant.dart';
 import '../constant/colors.dart';
 import '../constant/dimens.dart';
 import '../constant/strings.dart';
-import '../data/vos/genres_vo/genres_vo.dart';
-import 'genres_name_widget.dart';
 
 class SliverAppBarMovieImageDefaultWidget extends StatelessWidget {
   const SliverAppBarMovieImageDefaultWidget({
     Key? key,
     required this.colorOpacityHeight,
-    required this.genresList,
     required this.movieDetailResponse,
   }) : super(key: key);
 
   final double colorOpacityHeight;
-  final List<GenresVO> genresList;
   final MovieDetailResponse? movieDetailResponse;
 
   @override
@@ -58,34 +54,31 @@ class SliverAppBarMovieImageDefaultWidget extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //ဒီနေရာမှာ GenresMovieNameWidget ထဲမှာ ListViewBuilder ကြောင့် error ဖြစ်နေတာပါ
-                // Row ထဲမှာ ListViewBuilder ကိုသုံးရင် width height လိုပါတယ်
-                // အဲ့တော့ အာ့က်ိုမသုံးပဲ genreList ကို Row ထဲမှာ map လုပ်ပြီးပြထားပါတယ်
-                Row(
-                  children: genresList
-                      .map((e) => EasyText(
-                          text: "${e.name} |",
-                          fontSize: 12,
-                          textColor: kMovieTypeGenresColor))
-                      .toList(),
-                ),
-                EasyText(
-                    text: "${(movieDetailResponse?.runtime ?? 0) ~/ 60} h  ",
-                    fontSize: 12,
-                    textColor: kMovieTypeGenresColor),
-                EasyText(
-                    text: "${(movieDetailResponse?.runtime ?? 0) % 60} m",
-                    fontSize: 12,
-                    textColor: kMovieTypeGenresColor),
-              ],
-            ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //ဒီနေရာမှာ GenresMovieNameWidget ထဲမှာ ListViewBuilder ကြောင့် error ဖြစ်နေတာပါ
+              // Row ထဲမှာ ListViewBuilder ကိုသုံးရင် width height လိုပါတယ်
+              // အဲ့တော့ အာ့က်ိုမသုံးပဲ genreList ကို Row ထဲမှာ map လုပ်ပြီးပြထားပါတယ်
+              Row(
+                children: (movieDetailResponse?.genres ?? [])
+                    .map((e) => EasyText(
+                        text: "${e.name} |",
+                        fontSize: 12,
+                        textColor: kMovieTypeGenresColor))
+                    .toList(),
+              ),
+              EasyText(
+                  text: "${(movieDetailResponse?.runtime ?? 0) ~/ 60} h  ",
+                  fontSize: 12,
+                  textColor: kMovieTypeGenresColor),
+              EasyText(
+                  text: "${(movieDetailResponse?.runtime ?? 0) % 60} m",
+                  fontSize: 12,
+                  textColor: kMovieTypeGenresColor),
+            ],
           ),
         )
       ]),

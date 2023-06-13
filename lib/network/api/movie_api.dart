@@ -10,6 +10,7 @@ import '../response/genres_response/genres_response.dart';
 import '../response/movie_detail_response/movie_detail_response.dart';
 import '../response/now_playing_response/now_playing_response.dart';
 import '../response/popular_movies_response/popular_movies_response.dart';
+import '../response/search_movie_response/search_movie_response.dart';
 
 part 'movie_api.g.dart';
 
@@ -61,5 +62,10 @@ abstract class MovieAPI {
   Future<GetSimilarMovieResponse> getSimilarResponse(
     @Query(kQueryParamsApiKey) String apiKey,
     @Path(kPathParameterMovieId) int movieId,
+  );
+  @GET(kSearchMovieEndPoint)
+  Future<SearchMovieResponse> getSearchMovieResponse(
+    @Query(kQueryParamsApiKey) String apiKey,
+    @Query(kQueryParamsApiKeyForSearch) String movieName,
   );
 }

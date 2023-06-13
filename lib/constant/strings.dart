@@ -1,4 +1,4 @@
-const String kSearchMovies = "Search movies ";
+const String kSearchMovies = "Search movies... ";
 
 const String kPlaceHolderImage = "images/ph.png";
 

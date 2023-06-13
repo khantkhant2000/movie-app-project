@@ -75,17 +75,12 @@
 //     return const Center(child: CircularProgressIndicator());
 //   }
 // }
-
 import 'package:flutter/material.dart';
 import 'package:movie_app_project_test/data/model/movie_model.dart';
 import 'package:movie_app_project_test/data/model/movie_model_impl.dart';
+import 'package:movie_app_project_test/data/vos/movie_vo/result_vo.dart';
 import 'package:movie_app_project_test/network/response/actor_detail_response/actor_detail_response.dart';
-import '../constant/api_constant.dart';
-import '../constant/colors.dart';
-import '../constant/dimens.dart';
 import '../view_items/actor_and_actress_info_page_view_items/actor_and_actress_info_page_view_items.dart';
-import '../widgets/back_arrow_icon_widget.dart';
-import '../widgets/sliverAppBar_ActorImage_widget.dart';
 
 class ActorDetailPage extends StatefulWidget {
   const ActorDetailPage({
@@ -99,14 +94,27 @@ class ActorDetailPage extends StatefulWidget {
 }
 
 class _ActorDetailPageState extends State<ActorDetailPage> {
-  final MovieModel movieModel = MovieModelImpl();
+  final MovieModel _movieModel = MovieModelImpl();
   ActorDetailResponse? actorDetail;
+  List<MovieVO> movieList = [];
 
   @override
   void initState() {
-    movieModel.getActorDetail(widget.id).then((value) {
-      setState(() {
-        actorDetail = value;
+    _movieModel.getActorDetail(widget.id);
+    _movieModel.getActorDetailFormDataBase(widget.id).listen((event) {
+      if (mounted) {
+        setState(() {
+          actorDetail = event;
+        });
+      }
+
+      _movieModel.getNowPlayingMovieList();
+      _movieModel.getNowPlayingMovieListFormDataBase().listen((event) {
+        if (mounted) {
+          setState(() {
+            movieList = event ?? [];
+          });
+        }
       });
     });
 
@@ -119,50 +127,7 @@ class _ActorDetailPageState extends State<ActorDetailPage> {
         backgroundColor: Colors.black,
         body: ActorDetailItemView(
           actorDetail: actorDetail,
+          knownForMovieList: movieList,
         ));
-  }
-}
-
-class ActorDetailItemView extends StatelessWidget {
-  const ActorDetailItemView({
-    Key? key,
-    required this.actorDetail,
-  }) : super(key: key);
-  final ActorDetailResponse? actorDetail;
-
-  @override
-  Widget build(BuildContext context) {
-    if (actorDetail != null) {
-      return NestedScrollView(
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverAppBar(
-              leading: const BackArrowIconWidget(),
-              automaticallyImplyLeading: false,
-              shape: const Border(bottom: BorderSide.none),
-              pinned: true,
-              floating: true,
-              expandedHeight: kSP370x,
-              backgroundColor: kSliverAppBarBackgroundColor,
-              flexibleSpace: SliverAppBarActorImageDefaultWidget(
-                textForTitle: actorDetail?.name ?? '',
-                imageURL:
-                    "$kNetWortPosterPath${actorDetail?.profilePath ?? ''}",
-                colorOpacityHeight: kSP350x,
-              )),
-        ],
-        body: SingleChildScrollView(
-            child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BiographyItemView(getActorDetail: actorDetail),
-            MoreInformationItemView(actorDetail: actorDetail),
-            KnownForItemView()
-          ],
-        )),
-      );
-    }
-    return const Center(child: CircularProgressIndicator());
   }
 }

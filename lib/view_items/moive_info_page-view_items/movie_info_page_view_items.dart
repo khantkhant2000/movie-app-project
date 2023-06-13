@@ -1,46 +1,83 @@
 import 'package:flutter/material.dart';
 import '../../constant/api_constant.dart';
+import '../../constant/colors.dart';
 import '../../constant/dimens.dart';
 import '../../constant/strings.dart';
-import '../../data/model/movie_model.dart';
-import '../../data/model/movie_model_impl.dart';
 import '../../data/vos/cast-_vo/cast_vo.dart';
 import '../../data/vos/crew_vo/crew_vo.dart';
 import '../../data/vos/movie_vo/result_vo.dart';
-import '../../data/vos/production_companies_vo/production_companies_vo.dart';
 import '../../network/response/movie_detail_response/movie_detail_response.dart';
 import '../../widgets/ListTile_default_widget.dart';
+import '../../widgets/back_arrow_icon_widget.dart';
 import '../../widgets/easy_text_widget.dart';
 import '../../widgets/movie_name_and_rating_widget.dart';
 import '../../widgets/production_company_image_widget.dart';
+import '../../widgets/sliverAppBar_movieImages_widget.dart';
 
-MovieModel _movieModel = MovieModelImpl();
+class MovieDetailItemView extends StatelessWidget {
+  const MovieDetailItemView({
+    Key? key,
+    required this.movieDetail,
+    required this.getCastList,
+    required this.getCrewList,
+    required this.getSimilarMovieList,
+  }) : super(key: key);
+  final MovieDetailResponse? movieDetail;
+  final List<CastVO> getCastList;
+  final List<CrewVO> getCrewList;
+  final List<MovieVO> getSimilarMovieList;
 
-class StoryLineItemView extends StatelessWidget {
-  const StoryLineItemView({Key? key, required this.movieId}) : super(key: key);
-  final int movieId;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<MovieDetailResponse?>(
-      future: _movieModel.getMovieDetail(movieId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        if (snapshot.hasError) {
-          debugPrint("error fetching");
-        }
-        final movieDetail = snapshot.data;
-        return StoryLineView(movieDetailResponse: movieDetail);
-      },
+    if (movieDetail == null &&
+        getCastList.isEmpty &&
+        getCrewList.isEmpty &&
+        getSimilarMovieList.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return NestedScrollView(
+      floatHeaderSlivers: true,
+      headerSliverBuilder: (context, innerBoxIsScrolled) => [
+        SliverAppBar(
+            leading: const BackArrowIconWidget(),
+            automaticallyImplyLeading: false,
+            shape: const Border(bottom: BorderSide.none),
+            pinned: true,
+            floating: true,
+            expandedHeight: kSP370x,
+            backgroundColor: kSliverAppBarBackgroundColor,
+            flexibleSpace: SliverAppBarMovieImageDefaultWidget(
+              colorOpacityHeight: kSP350x,
+              movieDetailResponse: movieDetail,
+            )),
+      ],
+      body: SingleChildScrollView(
+          child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          StoryLineItemView(movieDetailResponse: movieDetail),
+          StarCastItemView(
+            castList: getCastList,
+          ),
+          TalentSquadItemView(
+            getCrewList: getCrewList,
+          ),
+          ProductionCompanyItemView(
+            movieDetail: movieDetail,
+          ),
+          RecommendedMovieItemView(
+            getSimilarMovieList: getSimilarMovieList,
+          ),
+        ],
+      )),
     );
   }
 }
 
-class StoryLineView extends StatelessWidget {
-  const StoryLineView({Key? key, required this.movieDetailResponse})
+///Story Line Session
+class StoryLineItemView extends StatelessWidget {
+  const StoryLineItemView({Key? key, required this.movieDetailResponse})
       : super(key: key);
   final MovieDetailResponse? movieDetailResponse;
   @override
@@ -69,6 +106,7 @@ class StoryLineView extends StatelessWidget {
   }
 }
 
+///Star Cast Session
 class StarCastItemView extends StatelessWidget {
   const StarCastItemView({
     Key? key,
@@ -117,6 +155,7 @@ class StarCastView extends StatelessWidget {
   }
 }
 
+///Crew or Talent Squad Session
 class TalentSquadItemView extends StatelessWidget {
   const TalentSquadItemView({
     Key? key,
@@ -166,12 +205,13 @@ class TalentSquadView extends StatelessWidget {
   }
 }
 
+///Production Company Session
 class ProductionCompanyItemView extends StatelessWidget {
   const ProductionCompanyItemView({
     Key? key,
-    required this.productionCompaniesList,
+    required this.movieDetail,
   }) : super(key: key);
-  final List<ProductionCompaniesVO> productionCompaniesList;
+  final MovieDetailResponse? movieDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -190,12 +230,12 @@ class ProductionCompanyItemView extends StatelessWidget {
           height: kSP130x,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: productionCompaniesList.length,
+            itemCount: movieDetail?.productionCompanies?.length,
             itemBuilder: (context, index) {
               return PCWidget(
                 imageURL:
-                    '$kNetWortPosterPath${productionCompaniesList[index].logoPath ?? ''}',
-                name: productionCompaniesList[index].name ?? '',
+                    '$kNetWortPosterPath${movieDetail?.productionCompanies?[index].logoPath ?? ''}',
+                name: movieDetail?.productionCompanies?[index].name ?? '',
               );
             },
           ),
@@ -205,6 +245,7 @@ class ProductionCompanyItemView extends StatelessWidget {
   }
 }
 
+///Similar Movie or Recommended Session
 class RecommendedMovieItemView extends StatelessWidget {
   const RecommendedMovieItemView({
     Key? key,
@@ -240,7 +281,7 @@ class RecommendedMovieView extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: kSP300x,
+          height: kSP230x,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: getSimilarMovieList.length,
@@ -252,9 +293,8 @@ class RecommendedMovieView extends StatelessWidget {
                 textForRating: getSimilarMovieList[index].voteAverage ?? 0,
                 movieName: getSimilarMovieList[index].title ?? "",
                 textForVotes: getSimilarMovieList[index].voteCount ?? 0,
-                widthForImage: kSP250x,
-                height: kSP300x,
-                width: kSP200x,
+                heightForImage: kSP220x,
+                widthForImage: kSP180x,
               );
             },
           ),

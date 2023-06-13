@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../../../data/vos/top_rated_vo/top_rated_vo.dart';
-
+import 'package:movie_app_project_test/data/vos/movie_vo/result_vo.dart';
 part 'top_rated_response.g.dart';
 
 @JsonSerializable()
@@ -9,7 +8,7 @@ class TopRatedResponse {
   int? page;
 
   @JsonKey(name: "results")
-  List<TopRatedVO>? results;
+  List<MovieVO>? results;
 
   @JsonKey(name: "total_pages")
   int? totalPages;

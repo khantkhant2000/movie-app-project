@@ -5,24 +5,20 @@ import 'package:movie_app_project_test/network/response/actor_detail_response/ac
 import 'package:movie_app_project_test/network/response/movie_detail_response/movie_detail_response.dart';
 import '../../data/vos/actor_result_vo/actor_result_vo.dart';
 import '../../data/vos/crew_vo/crew_vo.dart';
-import '../../data/vos/popular_vo/popular_vo.dart';
-import '../../data/vos/production_companies_vo/production_companies_vo.dart';
-import '../../data/vos/top_rated_vo/top_rated_vo.dart';
+import '../../data/vos/search_movie_vo/search_movie_vo.dart';
 
 abstract class MovieDataAgent {
   Future<List<GenresVO>?> getGenresList();
 
-  Future<List<GenresVO>?> getGenresListForMovieType(int movieId);
+  Future<List<MovieVO>?> getTopRateMovieList();
 
-  Future<List<TopRatedVO>?> getTopRateMovieList();
+  Future<List<MovieVO>?> getPopularMovieList();
 
-  Future<List<PopularVO>?> getPopularMovieList();
-
-  Future<List<MovieVO>?> getMovieList();
-
-  Future<List<ActorResultsVO>?> getActorsList();
+  Future<List<MovieVO>?> getNowPlayingMovieList();
 
   Future<List<MovieVO>?> getSimilarMovieList(int movieID);
+
+  Future<List<ActorResultsVO>?> getActorsList();
 
   Future<ActorDetailResponse?> getActorDetail(int id);
 
@@ -32,5 +28,5 @@ abstract class MovieDataAgent {
 
   Future<List<CrewVO>?> getCrew(int movieID);
 
-  Future<List<ProductionCompaniesVO>?> getProductionCompaniesList(int movieId);
+  Future<List<SearchMovieResultVO>?> getSearchMovieList(String name);
 }

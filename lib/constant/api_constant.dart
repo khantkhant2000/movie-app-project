@@ -11,6 +11,7 @@ const String kGetMovieDetailEndPoint = "/movie/{$kPathParameterMovieId}";
 const String kGetActorsDetailEndPoint = "/person/{$kPathParameterMovieId}";
 const String kGetSimilarMovieDetailEndPoint =
     "/movie/{$kPathParameterMovieId}/similar";
+const String kSearchMovieEndPoint = "/search/movie";
 
 const String kGetCreditsEndPoint = "/movie/{$kPathParameterMovieId}/credits";
 
@@ -19,6 +20,7 @@ const kApiKey = '57c041385166dcc2256aa0fa1932e9e4';
 
 ///Query Param
 const kQueryParamsApiKey = 'api_key';
+const kQueryParamsApiKeyForSearch = 'query';
 
 ///Path Parameter
 const kPathParameterMovieId = "movie_id";

@@ -4,13 +4,11 @@ import 'package:movie_app_project_test/data/vos/cast-_vo/cast_vo.dart';
 import 'package:movie_app_project_test/data/vos/crew_vo/crew_vo.dart';
 import 'package:movie_app_project_test/data/vos/genres_vo/genres_vo.dart';
 import 'package:movie_app_project_test/data/vos/movie_vo/result_vo.dart';
-import 'package:movie_app_project_test/data/vos/popular_vo/popular_vo.dart';
-import 'package:movie_app_project_test/data/vos/production_companies_vo/production_companies_vo.dart';
-import 'package:movie_app_project_test/data/vos/top_rated_vo/top_rated_vo.dart';
 import 'package:movie_app_project_test/network/data_agent/movie_data_agent.dart';
 import 'package:movie_app_project_test/network/response/actor_detail_response/actor_detail_response.dart';
 import 'package:movie_app_project_test/network/response/movie_detail_response/movie_detail_response.dart';
 import '../../data/vos/actor_result_vo/actor_result_vo.dart';
+import '../../data/vos/search_movie_vo/search_movie_vo.dart';
 import '../api/movie_api.dart';
 
 class MovieDataAgentImpl extends MovieDataAgent {
@@ -37,7 +35,7 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .first;
 
   @override
-  Future<List<MovieVO>?> getMovieList() => _api
+  Future<List<MovieVO>?> getNowPlayingMovieList() => _api
       .getNowPlayingResponse(kApiKey)
       .asStream()
       .map((event) => event.results)
@@ -52,14 +50,14 @@ class MovieDataAgentImpl extends MovieDataAgent {
       _api.getMovieDetailResponse(kApiKey, movieId);
 
   @override
-  Future<List<PopularVO>?> getPopularMovieList() => _api
+  Future<List<MovieVO>?> getPopularMovieList() => _api
       .getPopularMoviesResponse(kApiKey)
       .asStream()
       .map((event) => event.results)
       .first;
 
   @override
-  Future<List<TopRatedVO>?> getTopRateMovieList() => _api
+  Future<List<MovieVO>?> getTopRateMovieList() => _api
       .getTopRatedResponse(kApiKey)
       .asStream()
       .map((event) => event.results)
@@ -86,19 +84,17 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .map((event) => event.crew)
       .first;
 
-  @override
-  Future<List<ProductionCompaniesVO>?> getProductionCompaniesList(
-          int movieId) =>
-      _api
-          .getMovieDetailResponse(kApiKey, movieId)
-          .asStream()
-          .map((event) => event.productionCompanies)
-          .first;
+  // @override
+  // Future<List<GenresVO>?> getGenresListForMovieType(int movieId) => _api
+  //     .getMovieDetailResponse(kApiKey, movieId)
+  //     .asStream()
+  //     .map((event) => event.genres)
+  //     .first;
 
   @override
-  Future<List<GenresVO>?> getGenresListForMovieType(int movieId) => _api
-      .getMovieDetailResponse(kApiKey, movieId)
+  Future<List<SearchMovieResultVO>?> getSearchMovieList(String name) => _api
+      .getSearchMovieResponse(kApiKey, name)
       .asStream()
-      .map((event) => event.genres)
+      .map((event) => event.results)
       .first;
 }

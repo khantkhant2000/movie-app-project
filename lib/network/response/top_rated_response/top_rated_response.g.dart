@@ -10,7 +10,7 @@ TopRatedResponse _$TopRatedResponseFromJson(Map<String, dynamic> json) =>
     TopRatedResponse(
       page: json['pages'] as int?,
       results: (json['results'] as List<dynamic>?)
-          ?.map((e) => TopRatedVO.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => MovieVO.fromJson(e as Map<String, dynamic>))
           .toList(),
       totalPages: json['total_pages'] as int?,
       totalResults: json['total_results'] as int?,

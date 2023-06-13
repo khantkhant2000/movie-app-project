@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constant/colors.dart';
-import '../data/model/movie_model.dart';
-import '../data/model/movie_model_impl.dart';
 import '../view_items/home_page_view_items/home_page_view_items.dart';
-
-MovieModel genresModel = MovieModelImpl();
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,23 +9,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: kAppBodyBackgroundColor,
-        body: const SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SearchBarAndSearchIconItemView(),
-              MovieTypeScrollItemView(),
-              CarouselSliderImageItemView(),
-              MovieNameAndRatingItemView(),
-              YouMayLikeTextView(),
-              YouMayLikeMovieItemView(),
-              PopularTextView(),
-              PopularMovieItemView(),
-              ActorAndActressItemView(),
-            ],
-          ),
-        ));
+        body: const HomePageViewItems());
   }
 }
