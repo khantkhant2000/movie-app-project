@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
+import 'package:movie_app_project_test/data/vos/movie_vo/hive_similar_movie.dart';
 import 'package:movie_app_project_test/data/vos/movie_vo/result_vo.dart';
 import 'package:movie_app_project_test/persistent/movie_dao/movie_dao.dart';
-
 import '../../constant/hive_constant.dart';
 
 class MovieDAOImpl extends MovieDAO {
@@ -19,8 +19,16 @@ class MovieDAOImpl extends MovieDAO {
   }
 
   @override
+  void saveForSimilarMovieList(
+          int movieID, HiveSimilarMovieVO similarMovieList) =>
+      _similarMovieBox().put(movieID, similarMovieList);
+
+  @override
   Stream watchMovieBox() => _movieBox().watch();
 
+  @override
+  Stream watchSimilarMovieBox() => _similarMovieBox().watch();
+  /*--------------------------------------------------------------------------*/
   @override
   List<MovieVO>? getNowPlayingMovieListFromDataBase() {
     final getMovies = _movieBox().values.toList();
@@ -38,14 +46,6 @@ class MovieDAOImpl extends MovieDAO {
   }
 
   @override
-  List<MovieVO>? getSimilarMovieListFromDataBase() {
-    final getMovies = _movieBox().values.toList();
-    return getMovies
-        .where((element) => element.isSimilarMovies ?? false)
-        .toList();
-  }
-
-  @override
   List<MovieVO>? getTopRatedMovieListFromDataBase() {
     final getMovies = _movieBox().values.toList();
     return getMovies
@@ -53,6 +53,10 @@ class MovieDAOImpl extends MovieDAO {
         .toList();
   }
 
+  @override
+  HiveSimilarMovieVO? getSimilarMovieListFormDataBase(int movieID) =>
+      _similarMovieBox().get(movieID);
+  /*--------------------------------------------------------------------------*/
   @override
   Stream<List<MovieVO>?> getNowPlayingMovieListFromDataBaseStream() =>
       Stream.value(getNowPlayingMovieListFromDataBase());
@@ -62,12 +66,14 @@ class MovieDAOImpl extends MovieDAO {
       Stream.value(getPopularMovieListFromDataBase());
 
   @override
-  Stream<List<MovieVO>?> getSimilarMovieListFromDataBaseStream() =>
-      Stream.value(getSimilarMovieListFromDataBase());
-
-  @override
   Stream<List<MovieVO>?> getTopRatedMovieListFromDataBaseStream() =>
       Stream.value(getTopRatedMovieListFromDataBase());
+  @override
+  Stream<HiveSimilarMovieVO?> getSimilarMovieListFormDataBaseStream(
+          int movieID) =>
+      Stream.value(getSimilarMovieListFormDataBase(movieID));
 
   Box<MovieVO> _movieBox() => Hive.box<MovieVO>(kBoxNameForMovies);
+  Box<HiveSimilarMovieVO> _similarMovieBox() =>
+      Hive.box<HiveSimilarMovieVO>(kBoxNameForHiveSimilarMovieVO);
 }

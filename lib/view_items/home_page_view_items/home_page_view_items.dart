@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app_project_test/data/model/movie_model.dart';
-import 'package:movie_app_project_test/data/model/movie_model_impl.dart';
+import 'package:movie_app_project_test/bloc/home_page_bloc.dart';
 import 'package:movie_app_project_test/data/vos/genres_vo/genres_vo.dart';
+import 'package:provider/provider.dart';
 import '../../constant/colors.dart';
 import '../../constant/dimens.dart';
 import '../../constant/strings.dart';
@@ -11,36 +11,8 @@ import '../../pages/search_movie_page.dart';
 import '../../widgets/carousel_slider_image_for_actor.dart';
 import '../../widgets/easy_text_widget.dart';
 import '../../widgets/carousel_slider_for_image.dart';
+import '../../widgets/is_loading_widget.dart';
 import '../../widgets/movie_name_and_rating_widget.dart';
-import '../../widgets/movie_type_widget.dart';
-
-MovieModel _movieModel = MovieModelImpl();
-
-class HomePageViewItems extends StatelessWidget {
-  const HomePageViewItems({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SearchBarAndSearchIconItemView(),
-          MovieTypeScrollItemView(),
-          CarouselSliderImageItemView(),
-          MovieNameAndRatingItemView(),
-          YouMayLikeTextView(),
-          YouMayLikeMovieItemView(),
-          PopularTextView(),
-          PopularMovieItemView(),
-          ActorAndActressItemView(),
-        ],
-      ),
-    );
-  }
-}
 
 ///Search Movies and Icon session
 class SearchBarAndSearchIconItemView extends StatelessWidget {
@@ -92,68 +64,36 @@ class SearchBarAndSearchIconItemView extends StatelessWidget {
   }
 }
 
-/// Genres Movie Type Scroll View session
-class MovieTypeScrollItemView extends StatefulWidget {
+/// Genres (Movie Type) Scroll View session
+class MovieTypeScrollItemView extends StatelessWidget {
   const MovieTypeScrollItemView({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<MovieTypeScrollItemView> createState() =>
-      _MovieTypeScrollItemViewState();
-}
-
-class _MovieTypeScrollItemViewState extends State<MovieTypeScrollItemView> {
-  List<GenresVO> list = [];
-
-  @override
-  void initState() {
-    _movieModel.getGenresList();
-    _movieModel.getGenresListFromDataBase().listen((event) {
-      if (mounted) {
-        setState(() {
-          list = event ?? [];
-          final firstData = list.first;
-          firstData.isSelected = true;
-          list.removeAt(0);
-          list.insert(0, firstData);
-        });
-      }
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return list.isEmpty
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : MovieTypeView(
-            genresList: list,
-            onTap: (genres) {
-              setState(() {
-                list = list.map((e) {
-                  if (e == genres) {
-                    e.isSelected = true;
-                  } else {
-                    e.isSelected = false;
-                  }
-
-                  return e;
-                }).toList();
-              });
-            },
-          );
+    return Selector<HomePageBloc, List<GenresVO>?>(
+      selector: (_, bloc) => bloc.genresList,
+      builder: (_, bloc, __) {
+        return (bloc == null)
+            ? const IsLoadingWidget()
+            : MovieTypeView(
+                onTap: (genres) {
+                  final instance = context.read<HomePageBloc>();
+                  instance.checkColorGenresMovieType(genres);
+                },
+                genresList: bloc,
+              );
+      },
+    );
   }
 }
 
 class MovieTypeView extends StatelessWidget {
-  const MovieTypeView({Key? key, required this.genresList, required this.onTap})
+  const MovieTypeView({Key? key, required this.onTap, required this.genresList})
       : super(key: key);
   final List<GenresVO> genresList;
   final Function(GenresVO) onTap;
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -162,18 +102,27 @@ class MovieTypeView extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: genresList.length,
         padding: const EdgeInsets.symmetric(horizontal: kSP10x),
-        itemBuilder: (context, index) {
+        itemBuilder: (_, index) {
           return GestureDetector(
-            onTap: () {
-              onTap(genresList[index]);
-            },
-            child: MovieTypeWidget(
-              movieType: genresList[index].name ?? "",
-              color: (genresList[index].isSelected)
-                  ? kMovieTypeBackgroundColor
-                  : kMovieTypeWidgetDefaultBackgroundColor,
-            ),
-          );
+              onTap: () {
+                onTap(genresList[index]);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: kSP10x),
+                alignment: Alignment.center,
+                width: kSP100x,
+                height: kSP45x,
+                decoration: BoxDecoration(
+                  color: (genresList[index].isSelected)
+                      ? kMovieTypeBackgroundColor
+                      : kMovieTypeWidgetDefaultBackgroundColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(kSP5x)),
+                ),
+                child: EasyText(
+                  text: genresList[index].name ?? '',
+                  fontWeight: FontWeight.w500,
+                ),
+              ));
         },
       ),
     );
@@ -181,37 +130,21 @@ class MovieTypeView extends StatelessWidget {
 }
 
 /// Carousel Slider View Session
-class CarouselSliderImageItemView extends StatefulWidget {
+class CarouselSliderImageItemView extends StatelessWidget {
   const CarouselSliderImageItemView({Key? key}) : super(key: key);
 
   @override
-  State<CarouselSliderImageItemView> createState() =>
-      _CarouselSliderImageItemViewState();
-}
-
-class _CarouselSliderImageItemViewState
-    extends State<CarouselSliderImageItemView> {
-  List<MovieVO> getNowPlayingMovieList = [];
-  @override
-  void initState() {
-    _movieModel.getNowPlayingMovieList();
-    _movieModel.getNowPlayingMovieListFormDataBase().listen((event) {
-      if (mounted) {
-        setState(() {
-          getNowPlayingMovieList = event ?? [];
-        });
-      }
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return getNowPlayingMovieList.isEmpty
-        ? const Center(child: CircularProgressIndicator())
-        : CarouselSliderImageView(
-            getNowPlayingMovieList: getNowPlayingMovieList,
-          );
+    return Selector<HomePageBloc, List<MovieVO>?>(
+      selector: (_, bloc) => bloc.getNowPlayingMovieList,
+      builder: (_, bloc, __) {
+        return (bloc == null)
+            ? const IsLoadingWidget()
+            : CarouselSliderImageView(
+                getNowPlayingMovieList: bloc,
+              );
+      },
+    );
   }
 }
 
@@ -246,39 +179,18 @@ class CarouselSliderImageView extends StatelessWidget {
 }
 
 /// GetNowPlaying Movies Session
-class MovieNameAndRatingItemView extends StatefulWidget {
+class MovieNameAndRatingItemView extends StatelessWidget {
   const MovieNameAndRatingItemView({Key? key}) : super(key: key);
 
   @override
-  State<MovieNameAndRatingItemView> createState() =>
-      _MovieNameAndRatingItemViewState();
-}
-
-class _MovieNameAndRatingItemViewState
-    extends State<MovieNameAndRatingItemView> {
-  List<MovieVO> getNowPlayingMovieList = [];
-  @override
-  void initState() {
-    _movieModel.getNowPlayingMovieList();
-    _movieModel.getNowPlayingMovieListFormDataBase().listen((event) {
-      if (mounted) {
-        setState(() {
-          getNowPlayingMovieList = event ?? [];
-        });
-      }
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return getNowPlayingMovieList.isEmpty
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : MovieView(
-            movieList: getNowPlayingMovieList,
-          );
+    return Selector<HomePageBloc, List<MovieVO>?>(
+        selector: (_, bloc) => bloc.getNowPlayingMovieList,
+        builder: (_, bloc, __) => (bloc == null)
+            ? const IsLoadingWidget()
+            : MovieView(
+                movieList: bloc,
+              ));
   }
 }
 
@@ -327,40 +239,21 @@ class YouMayLikeTextView extends StatelessWidget {
 }
 
 ///Get Top Rated Movie Session
-class YouMayLikeMovieItemView extends StatefulWidget {
+class YouMayLikeMovieItemView extends StatelessWidget {
   const YouMayLikeMovieItemView({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<YouMayLikeMovieItemView> createState() =>
-      _YouMayLikeMovieItemViewState();
-}
-
-class _YouMayLikeMovieItemViewState extends State<YouMayLikeMovieItemView> {
-  List<MovieVO> getTopRatedMovieList = [];
-  @override
-  void initState() {
-    _movieModel.getTopRateMovieList();
-    _movieModel.getTopRatedMovieListFormDataBase().listen((event) {
-      if (mounted) {
-        setState(() {
-          getTopRatedMovieList = event ?? [];
-        });
-      }
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return getTopRatedMovieList.isEmpty
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : YouMayLikeMovieView(
-            topRatedMovieList: getTopRatedMovieList,
-          );
+    return Selector<HomePageBloc, List<MovieVO>?>(
+      selector: (_, bloc) => bloc.getTopRatedMovieList,
+      builder: (_, bloc, __) => (bloc == null)
+          ? const IsLoadingWidget()
+          : YouMayLikeMovieView(
+              topRatedMovieList: bloc,
+            ),
+    );
   }
 }
 
@@ -406,31 +299,19 @@ class PopularTextView extends StatelessWidget {
 }
 
 ///Popular Movie Session
-class PopularMovieItemView extends StatefulWidget {
+class PopularMovieItemView extends StatelessWidget {
   const PopularMovieItemView({Key? key}) : super(key: key);
 
   @override
-  State<PopularMovieItemView> createState() => _PopularMovieItemViewState();
-}
-
-class _PopularMovieItemViewState extends State<PopularMovieItemView> {
-  List<MovieVO> getPopularMoviesList = [];
-  @override
-  void initState() {
-    _movieModel.getPopularMovieList();
-    _movieModel.getPopularMovieListFormDataBase().listen((event) {
-      if (mounted) {
-        setState(() {
-          getPopularMoviesList = event ?? [];
-        });
-      }
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return PopularMovieView(popularMovies: getPopularMoviesList);
+    return Selector<HomePageBloc, List<MovieVO>?>(
+      selector: (_, bloc) => bloc.getPopularMoviesList,
+      builder: (_, bloc, __) => (bloc == null)
+          ? const IsLoadingWidget()
+          : PopularMovieView(
+              popularMovies: bloc,
+            ),
+    );
   }
 }
 
@@ -463,37 +344,19 @@ class PopularMovieView extends StatelessWidget {
 }
 
 ///Actor and Actress Session
-class ActorAndActressItemView extends StatefulWidget {
+class ActorAndActressItemView extends StatelessWidget {
   const ActorAndActressItemView({Key? key}) : super(key: key);
 
   @override
-  State<ActorAndActressItemView> createState() =>
-      _ActorAndActressItemViewState();
-}
-
-class _ActorAndActressItemViewState extends State<ActorAndActressItemView> {
-  List<ActorResultsVO> actorsList = [];
-
-  @override
-  void initState() {
-    _movieModel.getActorsList();
-    _movieModel.getActorResultListFormDataBase().listen((event) {
-      if (mounted) {
-        setState(() {
-          actorsList = event ?? [];
-        });
-      }
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return actorsList.isEmpty
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : ActorAndActressView(actorsResult: actorsList);
+    return Selector<HomePageBloc, List<ActorResultsVO>?>(
+      selector: (_, bloc) => bloc.actorsList,
+      builder: (_, bloc, __) => (bloc == null)
+          ? const IsLoadingWidget()
+          : ActorAndActressView(
+              actorsResult: bloc,
+            ),
+    );
   }
 }
 

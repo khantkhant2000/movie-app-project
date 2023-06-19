@@ -15,7 +15,7 @@ const kSP35x = 35.0;
 const kSP40x = 40.0;
 const kSP45x = 45.0;
 const kSP50x = 50.0;
-const kSP55x = 55.0;
+const kSP54x = 54.0;
 const kSP60x = 60.0;
 const kSP70x = 70.0;
 const kSP80x = 80.0;
@@ -61,7 +61,7 @@ const kSearchBarHeight = 50.0;
 const kSearchBarWidth = 250.0;
 
 ///Carousal slider default specific
-const int kInitialPage = 0;
+const int kValueForInitialPage = 0;
 const double kEnlargeFactor = 0.3;
 const int kDurationSecond = 3;
 const int kDurationMilliSecond = 800;

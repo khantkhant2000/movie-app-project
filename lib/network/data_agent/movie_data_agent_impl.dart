@@ -84,13 +84,6 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .map((event) => event.crew)
       .first;
 
-  // @override
-  // Future<List<GenresVO>?> getGenresListForMovieType(int movieId) => _api
-  //     .getMovieDetailResponse(kApiKey, movieId)
-  //     .asStream()
-  //     .map((event) => event.genres)
-  //     .first;
-
   @override
   Future<List<SearchMovieResultVO>?> getSearchMovieList(String name) => _api
       .getSearchMovieResponse(kApiKey, name)

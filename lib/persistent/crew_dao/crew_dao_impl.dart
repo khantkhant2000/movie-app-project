@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import '../../constant/hive_constant.dart';
-import '../../data/vos/crew_vo/crew_vo.dart';
+import '../../data/vos/crew_vo/hive_crew_vo.dart';
 import 'crew_dao.dart';
 
 class CrewDAOImpl extends CrewDAO {
@@ -8,22 +8,20 @@ class CrewDAOImpl extends CrewDAO {
   static final CrewDAOImpl _singleton = CrewDAOImpl._();
   factory CrewDAOImpl() => _singleton;
 
-  Box<CrewVO> _crewBox() => Hive.box<CrewVO>(kBoxNameForCrew);
+  Box<HiveCrewVO> _hiveCrewBox() => Hive.box<HiveCrewVO>(kBoxNameForCrew);
 
   @override
-  List<CrewVO>? getCrewListFromDataBase() => _crewBox().values.toList();
+  HiveCrewVO? getCrewListFromDataBase(int movieID) =>
+      _hiveCrewBox().get(movieID);
 
   @override
-  Stream<List<CrewVO>?> getCrewListFromDataBaseStream() =>
-      Stream.value(getCrewListFromDataBase());
+  Stream<HiveCrewVO?> getCrewListFromDataBaseStream(int movieID) =>
+      Stream.value(getCrewListFromDataBase(movieID));
 
   @override
-  void saveForCrewVO(List<CrewVO> crewList) {
-    for (CrewVO crewVO in crewList) {
-      _crewBox().put(crewVO.id, crewVO);
-    }
-  }
+  void saveForCrewVO(int movieID, HiveCrewVO crewList) =>
+      _hiveCrewBox().put(movieID, crewList);
 
   @override
-  Stream watchCrewBox() => _crewBox().watch();
+  Stream watchCrewBox() => _hiveCrewBox().watch();
 }

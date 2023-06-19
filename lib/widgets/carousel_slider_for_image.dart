@@ -29,7 +29,7 @@ class CarouselSliderImage extends StatelessWidget {
       options: CarouselOptions(
         aspectRatio: aspectRatio,
         viewportFraction: viewPortFraction,
-        initialPage: kInitialPage,
+        initialPage: kValueForInitialPage,
         enableInfiniteScroll: true,
         reverse: false,
         autoPlay: autoPlayImage,

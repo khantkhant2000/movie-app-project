@@ -43,3 +43,5 @@ const Color kMyDividerColor = Colors.white;
 const Color kSliverAppBarBackgroundColor = Colors.black;
 
 const Color kMovieTypeGenresColor = Color(0xFFB3B3B3);
+
+const Color kDateColorForSearchMovies = Color(0xFFFF0202);

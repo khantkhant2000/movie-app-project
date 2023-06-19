@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
-import 'package:movie_app_project_test/data/vos/cast-_vo/cast_vo.dart';
-
 import '../../constant/hive_constant.dart';
+import '../../data/vos/cast-_vo/hive_cast_vo.dart';
 import 'cast_dao.dart';
 
 class CastDAOImpl extends CastDAO {
@@ -9,22 +8,20 @@ class CastDAOImpl extends CastDAO {
   static final CastDAOImpl _singleton = CastDAOImpl._();
   factory CastDAOImpl() => _singleton;
 
-  Box<CastVO> _castBox() => Hive.box<CastVO>(kBoxNameForCast);
+  Box<HiveCastVO> _castBox() => Hive.box<HiveCastVO>(kBoxNameForCast);
 
   @override
-  List<CastVO>? getCastListFromDataBase() => _castBox().values.toList();
-
-  @override
-  Stream<List<CastVO>?> getCastListFromDataBaseStream() =>
-      Stream.value(getCastListFromDataBase());
-
-  @override
-  void saveForCastVO(List<CastVO> castList) {
-    for (CastVO castVO in castList) {
-      _castBox().put(castVO.id, castVO);
-    }
-  }
+  Stream<HiveCastVO?> getCastListFromDataBaseStream(int movieID) =>
+      Stream.value(getCastListFromDataBase(movieID));
 
   @override
   Stream watchCastBox() => _castBox().watch();
+
+  @override
+  void saveForCastVO(int movieID, HiveCastVO castList) {
+    _castBox().put(movieID, castList);
+  }
+
+  @override
+  HiveCastVO? getCastListFromDataBase(int movieID) => _castBox().get(movieID);
 }

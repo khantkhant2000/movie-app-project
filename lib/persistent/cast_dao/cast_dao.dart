@@ -1,9 +1,11 @@
-import '../../data/vos/cast-_vo/cast_vo.dart';
+import '../../data/vos/cast-_vo/hive_cast_vo.dart';
 
 abstract class CastDAO {
-  void saveForCastVO(List<CastVO> castList);
-  List<CastVO>? getCastListFromDataBase();
+  void saveForCastVO(int movieID, HiveCastVO castList);
+
+  HiveCastVO? getCastListFromDataBase(int movieID);
 
   Stream watchCastBox();
-  Stream<List<CastVO>?> getCastListFromDataBaseStream();
+
+  Stream<HiveCastVO?> getCastListFromDataBaseStream(int movieID);
 }

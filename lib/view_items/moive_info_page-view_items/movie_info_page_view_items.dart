@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app_project_test/data/vos/crew_vo/hive_crew_vo.dart';
+import 'package:movie_app_project_test/data/vos/movie_vo/hive_similar_movie.dart';
+import 'package:movie_app_project_test/widgets/is_loading_widget.dart';
+import 'package:provider/provider.dart';
+import '../../bloc/movie_datail_page_bloc.dart';
 import '../../constant/api_constant.dart';
 import '../../constant/colors.dart';
 import '../../constant/dimens.dart';
 import '../../constant/strings.dart';
-import '../../data/vos/cast-_vo/cast_vo.dart';
-import '../../data/vos/crew_vo/crew_vo.dart';
-import '../../data/vos/movie_vo/result_vo.dart';
+import '../../data/vos/cast-_vo/hive_cast_vo.dart';
 import '../../network/response/movie_detail_response/movie_detail_response.dart';
 import '../../widgets/ListTile_default_widget.dart';
 import '../../widgets/back_arrow_icon_widget.dart';
@@ -17,60 +20,43 @@ import '../../widgets/sliverAppBar_movieImages_widget.dart';
 class MovieDetailItemView extends StatelessWidget {
   const MovieDetailItemView({
     Key? key,
-    required this.movieDetail,
-    required this.getCastList,
-    required this.getCrewList,
-    required this.getSimilarMovieList,
   }) : super(key: key);
-  final MovieDetailResponse? movieDetail;
-  final List<CastVO> getCastList;
-  final List<CrewVO> getCrewList;
-  final List<MovieVO> getSimilarMovieList;
 
   @override
   Widget build(BuildContext context) {
-    if (movieDetail == null &&
-        getCastList.isEmpty &&
-        getCrewList.isEmpty &&
-        getSimilarMovieList.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    return NestedScrollView(
-      floatHeaderSlivers: true,
-      headerSliverBuilder: (context, innerBoxIsScrolled) => [
-        SliverAppBar(
-            leading: const BackArrowIconWidget(),
-            automaticallyImplyLeading: false,
-            shape: const Border(bottom: BorderSide.none),
-            pinned: true,
-            floating: true,
-            expandedHeight: kSP370x,
-            backgroundColor: kSliverAppBarBackgroundColor,
-            flexibleSpace: SliverAppBarMovieImageDefaultWidget(
-              colorOpacityHeight: kSP350x,
-              movieDetailResponse: movieDetail,
-            )),
-      ],
-      body: SingleChildScrollView(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          StoryLineItemView(movieDetailResponse: movieDetail),
-          StarCastItemView(
-            castList: getCastList,
-          ),
-          TalentSquadItemView(
-            getCrewList: getCrewList,
-          ),
-          ProductionCompanyItemView(
-            movieDetail: movieDetail,
-          ),
-          RecommendedMovieItemView(
-            getSimilarMovieList: getSimilarMovieList,
-          ),
+    return Selector<MovieDetailPageBloc, MovieDetailResponse?>(
+      selector: (_, bloc) => bloc.movieDetail,
+      builder: (_, bloc, __) => NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+              leading: const BackArrowIconWidget(),
+              automaticallyImplyLeading: false,
+              shape: const Border(bottom: BorderSide.none),
+              pinned: true,
+              floating: true,
+              expandedHeight: kSP370x,
+              backgroundColor: kSliverAppBarBackgroundColor,
+              flexibleSpace: SliverAppBarMovieImageDefaultWidget(
+                colorOpacityHeight: kSP350x,
+                movieDetailResponse: bloc,
+              )),
         ],
-      )),
+        body: SingleChildScrollView(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            StoryLineItemView(movieDetailResponse: bloc),
+            const StarCastItemView(),
+            const TalentSquadItemView(),
+            ProductionCompanyItemView(
+              movieDetail: bloc,
+            ),
+            const RecommendedMovieItemView(),
+          ],
+        )),
+      ),
     );
   }
 }
@@ -110,9 +96,7 @@ class StoryLineItemView extends StatelessWidget {
 class StarCastItemView extends StatelessWidget {
   const StarCastItemView({
     Key? key,
-    required this.castList,
   }) : super(key: key);
-  final List<CastVO> castList;
 
   @override
   Widget build(BuildContext context) {
@@ -127,27 +111,31 @@ class StarCastItemView extends StatelessWidget {
               fontSize: kFS18x,
             ),
           ),
-          StarCastView(getCastList: castList)
+          Selector<MovieDetailPageBloc, HiveCastVO?>(
+              selector: (_, bloc) => bloc.getCastList,
+              builder: (_, bloc, __) => (bloc == null)
+                  ? const IsLoadingWidget()
+                  : StarCastView(getCastList: bloc))
         ]);
   }
 }
 
 class StarCastView extends StatelessWidget {
   const StarCastView({Key? key, required this.getCastList}) : super(key: key);
-  final List<CastVO> getCastList;
+  final HiveCastVO? getCastList;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: kSP80x,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: getCastList.length,
+        itemCount: getCastList?.getCastList?.length,
         itemBuilder: (context, index) {
           return ListTileDefault(
             imageURLForActor:
-                '$kNetWortPosterPath${getCastList[index].profilePath ?? ""}',
-            actorName: getCastList[index].name ?? "",
-            genderId: getCastList[index].gender ?? 0,
+                '$kNetWortPosterPath${getCastList?.getCastList?[index].profilePath ?? ""}',
+            actorName: getCastList?.getCastList?[index].name ?? "",
+            genderId: getCastList?.getCastList?[index].gender ?? 0,
           );
         },
       ),
@@ -159,10 +147,7 @@ class StarCastView extends StatelessWidget {
 class TalentSquadItemView extends StatelessWidget {
   const TalentSquadItemView({
     Key? key,
-    required this.getCrewList,
   }) : super(key: key);
-  final List<CrewVO>? getCrewList;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -176,9 +161,13 @@ class TalentSquadItemView extends StatelessWidget {
             fontSize: kFS18x,
           ),
         ),
-        SizedBox(
-            height: kSP80x,
-            child: TalentSquadView(getCrewList: getCrewList ?? []))
+        Selector<MovieDetailPageBloc, HiveCrewVO?>(
+          selector: (_, bloc) => bloc.getCrewList,
+          builder: (_, bloc, __) => (bloc == null)
+              ? const IsLoadingWidget()
+              : SizedBox(
+                  height: kSP80x, child: TalentSquadView(getCrewList: bloc)),
+        )
       ],
     );
   }
@@ -187,18 +176,18 @@ class TalentSquadItemView extends StatelessWidget {
 class TalentSquadView extends StatelessWidget {
   const TalentSquadView({Key? key, required this.getCrewList})
       : super(key: key);
-  final List<CrewVO> getCrewList;
+  final HiveCrewVO? getCrewList;
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: getCrewList.length,
+      itemCount: getCrewList?.crewList?.length,
       itemBuilder: (context, index) {
         return ListTileDefault(
           imageURLForActor:
-              '$kNetWortPosterPath${getCrewList[index].profilePath ?? ""}',
-          actorName: getCrewList[index].name ?? '',
-          genderId: getCrewList[index].id ?? 0,
+              '$kNetWortPosterPath${getCrewList?.crewList?[index].profilePath ?? ""}',
+          actorName: getCrewList?.crewList?[index].name ?? '',
+          genderId: getCrewList?.crewList?[index].id ?? 0,
         );
       },
     );
@@ -249,14 +238,17 @@ class ProductionCompanyItemView extends StatelessWidget {
 class RecommendedMovieItemView extends StatelessWidget {
   const RecommendedMovieItemView({
     Key? key,
-    required this.getSimilarMovieList,
   }) : super(key: key);
-  final List<MovieVO>? getSimilarMovieList;
+
   @override
   Widget build(BuildContext context) {
-    return RecommendedMovieView(
-      getSimilarMovieList: getSimilarMovieList ?? [],
-    );
+    return Selector<MovieDetailPageBloc, HiveSimilarMovieVO?>(
+        selector: (_, bloc) => bloc.getSimilarMovieList,
+        builder: (_, bloc, __) => (bloc == null)
+            ? const IsLoadingWidget()
+            : RecommendedMovieView(
+                getSimilarMovieList: bloc,
+              ));
   }
 }
 
@@ -265,7 +257,7 @@ class RecommendedMovieView extends StatelessWidget {
     Key? key,
     required this.getSimilarMovieList,
   }) : super(key: key);
-  final List<MovieVO> getSimilarMovieList;
+  final HiveSimilarMovieVO? getSimilarMovieList;
 
   @override
   Widget build(BuildContext context) {
@@ -284,15 +276,22 @@ class RecommendedMovieView extends StatelessWidget {
           height: kSP230x,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: getSimilarMovieList.length,
+            itemCount: getSimilarMovieList?.similarMovieList?.length,
             itemBuilder: (context, index) {
               return MovieNameAndRatingView(
-                movieId: getSimilarMovieList[index].id ?? 0,
+                movieId: getSimilarMovieList?.similarMovieList?[index].id ?? 0,
                 heightForColorOpacity: kSP230x,
-                imageURL: getSimilarMovieList[index].posterPath ?? "",
-                textForRating: getSimilarMovieList[index].voteAverage ?? 0,
-                movieName: getSimilarMovieList[index].title ?? "",
-                textForVotes: getSimilarMovieList[index].voteCount ?? 0,
+                imageURL:
+                    getSimilarMovieList?.similarMovieList?[index].posterPath ??
+                        "",
+                textForRating:
+                    getSimilarMovieList?.similarMovieList?[index].voteAverage ??
+                        0,
+                movieName:
+                    getSimilarMovieList?.similarMovieList?[index].title ?? "",
+                textForVotes:
+                    getSimilarMovieList?.similarMovieList?[index].voteCount ??
+                        0,
                 heightForImage: kSP220x,
                 widthForImage: kSP180x,
               );
