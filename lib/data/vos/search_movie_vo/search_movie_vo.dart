@@ -86,4 +86,12 @@ class SearchMovieResultVO {
   String toString() {
     return 'SearchMovieResultVO{adult: $adult, backdropPath: $backdropPath, genreIds: $genreIds, id: $id, originalLanguage: $originalLanguage, originalTitle: $originalTitle, overview: $overview, popularity: $popularity, posterPath: $posterPath, releaseDate: $releaseDate, title: $title, video: $video, voteAverage: $voteAverage, voteCount: $voteCount}';
   }
+
+  String getReleaseData(String? releaseDate) {
+    if (releaseDate?.isNotEmpty ?? false) {
+      DateTime dateTime = DateTime.parse(releaseDate ?? "");
+      return dateTime.year.toString();
+    }
+    return "N/A";
+  }
 }

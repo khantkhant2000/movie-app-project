@@ -100,6 +100,7 @@ class CarouselSliderForActor extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ActorDetailPage(
+                          movieList: url.knownFor ?? [],
                           id: url.id ?? 0,
                         )));
               },

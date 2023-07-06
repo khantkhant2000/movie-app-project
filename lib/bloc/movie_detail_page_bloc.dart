@@ -1,7 +1,6 @@
 import 'package:movie_app_project_test/data/model/movie_model_impl.dart';
 import '../data/model/movie_model.dart';
 import 'package:flutter/foundation.dart';
-
 import '../data/vos/cast-_vo/hive_cast_vo.dart';
 import '../data/vos/crew_vo/hive_crew_vo.dart';
 import '../data/vos/movie_vo/hive_similar_movie.dart';

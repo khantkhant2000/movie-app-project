@@ -8,18 +8,18 @@ const Color kSearchBarBackgroundColor = Color(0xFF211C1C);
 const Color kSearchMovieColor = Color(0xFF999999);
 
 ///search icon background Color
-const Color kSearchIconBackgroundColor = Color(0xFFFF0202);
+const Color kSearchIconBackgroundColor = Color(0xFFfc612d);
 const Color kSearchIconColor = Colors.white;
 
 ///Movie Type OnPress backGround color
-const Color kMovieTypeBackgroundColor = Color(0xFFFF0202);
+const Color kGenresOnTapBackgroundColor = Color(0xFFfc612d);
 
 ///Rating Star Icon Color
 const Color kStarIconColor = Color(0xFfFFD020);
 
 ///PlayIcon Bottom BackGround Color
-const Color kPlayIconBackgroundColor = Color(0xFFFF0202);
-const Color kIconBackArrowColor = Color(0xFFFF0202);
+const Color kPlayIconBackgroundColor = Color(0xFFfc612d);
+const Color kIconBackArrowColor = Color(0xFFfc612d);
 
 ///Movie name and View text color
 const Color kMovieNameTextColor = Colors.white;
@@ -44,4 +44,4 @@ const Color kSliverAppBarBackgroundColor = Colors.black;
 
 const Color kMovieTypeGenresColor = Color(0xFFB3B3B3);
 
-const Color kDateColorForSearchMovies = Color(0xFFFF0202);
+const Color kDateColorForSearchMovies = Color(0xFFfc612d);

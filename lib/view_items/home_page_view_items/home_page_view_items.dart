@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app_project_test/bloc/home_page_bloc.dart';
 import 'package:movie_app_project_test/data/vos/genres_vo/genres_vo.dart';
+import 'package:movie_app_project_test/data/vos/movie_vo/hive_movie_by_genres_id.dart';
 import 'package:provider/provider.dart';
 import '../../constant/colors.dart';
 import '../../constant/dimens.dart';
@@ -73,14 +74,20 @@ class MovieTypeScrollItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<HomePageBloc, List<GenresVO>?>(
+      shouldRebuild: (pre, next) => pre != next,
       selector: (_, bloc) => bloc.genresList,
       builder: (_, bloc, __) {
         return (bloc == null)
             ? const IsLoadingWidget()
             : MovieTypeView(
                 onTap: (genres) {
+                  print("this is onTap genres id =============> ${genres.id}");
                   final instance = context.read<HomePageBloc>();
                   instance.checkColorGenresMovieType(genres);
+                  instance.movieByGenresID = genres.id ?? 0;
+
+                  print(
+                      "this is final instance of genresId ==========>${instance.movieByGenresID}");
                 },
                 genresList: bloc,
               );
@@ -114,7 +121,7 @@ class MovieTypeView extends StatelessWidget {
                 height: kSP45x,
                 decoration: BoxDecoration(
                   color: (genresList[index].isSelected)
-                      ? kMovieTypeBackgroundColor
+                      ? kGenresOnTapBackgroundColor
                       : kMovieTypeWidgetDefaultBackgroundColor,
                   borderRadius: const BorderRadius.all(Radius.circular(kSP5x)),
                 ),
@@ -131,17 +138,20 @@ class MovieTypeView extends StatelessWidget {
 
 /// Carousel Slider View Session
 class CarouselSliderImageItemView extends StatelessWidget {
-  const CarouselSliderImageItemView({Key? key}) : super(key: key);
+  const CarouselSliderImageItemView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Selector<HomePageBloc, List<MovieVO>?>(
-      selector: (_, bloc) => bloc.getNowPlayingMovieList,
+    return Selector<HomePageBloc, HiveMovieByGenresIDVO?>(
+      shouldRebuild: (pre, next) => pre != next,
+      selector: (_, bloc) => bloc.getMoviesListByGenres,
       builder: (_, bloc, __) {
         return (bloc == null)
             ? const IsLoadingWidget()
             : CarouselSliderImageView(
-                getNowPlayingMovieList: bloc,
+                getMoviesListByGenres: bloc,
               );
       },
     );
@@ -151,9 +161,9 @@ class CarouselSliderImageItemView extends StatelessWidget {
 class CarouselSliderImageView extends StatelessWidget {
   const CarouselSliderImageView({
     Key? key,
-    required this.getNowPlayingMovieList,
+    required this.getMoviesListByGenres,
   }) : super(key: key);
-  final List<MovieVO> getNowPlayingMovieList;
+  final HiveMovieByGenresIDVO? getMoviesListByGenres;
 
   @override
   Widget build(BuildContext context) {
@@ -161,12 +171,14 @@ class CarouselSliderImageView extends StatelessWidget {
       height: kSP400x,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: getNowPlayingMovieList.length,
+          itemCount: getMoviesListByGenres?.getMovieByGenresID?.length,
           itemBuilder: (context, index) {
             return Padding(
                 padding: const EdgeInsets.only(bottom: kSP10x),
                 child: CarouselSliderImage(
-                    imagesURL: getNowPlayingMovieList.take(5).toList(),
+                    imagesURL: getMoviesListByGenres?.getMovieByGenresID
+                        ?.take(5)
+                        .toList(),
                     widget: const CircleAvatar(
                       backgroundColor: kPlayIconBackgroundColor,
                       child: Icon(
@@ -178,25 +190,27 @@ class CarouselSliderImageView extends StatelessWidget {
   }
 }
 
-/// GetNowPlaying Movies Session
+/// get movie by genres id Session
 class MovieNameAndRatingItemView extends StatelessWidget {
   const MovieNameAndRatingItemView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Selector<HomePageBloc, List<MovieVO>?>(
-        selector: (_, bloc) => bloc.getNowPlayingMovieList,
+    return Selector<HomePageBloc, HiveMovieByGenresIDVO?>(
+        shouldRebuild: (pre, next) => pre != next,
+        selector: (_, bloc) => bloc.getMoviesListByGenres,
         builder: (_, bloc, __) => (bloc == null)
             ? const IsLoadingWidget()
             : MovieView(
-                movieList: bloc,
+                hiveMovieByGenresID: bloc,
               ));
   }
 }
 
 class MovieView extends StatelessWidget {
-  const MovieView({Key? key, required this.movieList}) : super(key: key);
-  final List<MovieVO> movieList;
+  const MovieView({Key? key, required this.hiveMovieByGenresID})
+      : super(key: key);
+  final HiveMovieByGenresIDVO? hiveMovieByGenresID;
 
   @override
   Widget build(BuildContext context) {
@@ -204,15 +218,21 @@ class MovieView extends StatelessWidget {
       height: kSP190x,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: movieList.length,
+        itemCount: hiveMovieByGenresID?.getMovieByGenresID?.length,
         itemBuilder: (context, index) {
           return MovieNameAndRatingView(
-            movieId: movieList[index].id ?? 0,
+            movieId: hiveMovieByGenresID?.getMovieByGenresID?[index].id ?? 0,
             heightForColorOpacity: kSP230x,
-            imageURL: movieList[index].posterPath ?? "",
-            textForRating: movieList[index].voteAverage ?? 0,
-            movieName: movieList[index].title ?? "",
-            textForVotes: movieList[index].voteCount ?? 0,
+            imageURL:
+                hiveMovieByGenresID?.getMovieByGenresID?[index].posterPath ??
+                    "",
+            textForRating:
+                hiveMovieByGenresID?.getMovieByGenresID?[index].voteAverage ??
+                    0,
+            movieName:
+                hiveMovieByGenresID?.getMovieByGenresID?[index].title ?? "",
+            textForVotes:
+                hiveMovieByGenresID?.getMovieByGenresID?[index].voteCount ?? 0,
             widthForImage: kSP180x,
             heightForImage: kSP180x,
             widthForBox: kSP170x,
@@ -247,7 +267,11 @@ class YouMayLikeMovieItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<HomePageBloc, List<MovieVO>?>(
-      selector: (_, bloc) => bloc.getTopRatedMovieList,
+      selector: (
+        _,
+        bloc,
+      ) =>
+          bloc.getTopRatedMovieList,
       builder: (_, bloc, __) => (bloc == null)
           ? const IsLoadingWidget()
           : YouMayLikeMovieView(
@@ -263,23 +287,31 @@ class YouMayLikeMovieView extends StatelessWidget {
   final List<MovieVO> topRatedMovieList;
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: kSP230x,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: topRatedMovieList.length,
-        itemBuilder: (context, index) {
-          return MovieNameAndRatingView(
-            movieId: topRatedMovieList[index].id ?? 0,
-            heightForColorOpacity: kSP230x,
-            imageURL: topRatedMovieList[index].posterPath ?? "",
-            textForRating: topRatedMovieList[index].voteAverage ?? 0,
-            movieName: topRatedMovieList[index].title ?? "",
-            textForVotes: topRatedMovieList[index].voteCount ?? 0,
-            heightForImage: kSP220x,
-            widthForImage: kSP180x,
-          );
-        },
+    return Selector<HomePageBloc, ScrollController>(
+      selector: (
+        _,
+        bloc,
+      ) =>
+          bloc.controllerForTopRatedMovie,
+      builder: (_, controller, __) => SizedBox(
+        height: kSP230x,
+        child: ListView.builder(
+          controller: controller,
+          scrollDirection: Axis.horizontal,
+          itemCount: topRatedMovieList.length,
+          itemBuilder: (context, index) {
+            return MovieNameAndRatingView(
+              movieId: topRatedMovieList[index].id ?? 0,
+              heightForColorOpacity: kSP230x,
+              imageURL: topRatedMovieList[index].posterPath ?? "",
+              textForRating: topRatedMovieList[index].voteAverage ?? 0,
+              movieName: topRatedMovieList[index].title ?? "",
+              textForVotes: topRatedMovieList[index].voteCount ?? 0,
+              heightForImage: kSP220x,
+              widthForImage: kSP180x,
+            );
+          },
+        ),
       ),
     );
   }
@@ -321,25 +353,32 @@ class PopularMovieView extends StatelessWidget {
   final List<MovieVO> popularMovies;
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: kSP230x,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: popularMovies.length,
-        itemBuilder: (context, index) {
-          return MovieNameAndRatingView(
-            movieId: popularMovies[index].id ?? 0,
-            heightForColorOpacity: kSP230x,
-            imageURL: popularMovies[index].posterPath ?? '',
-            textForRating: popularMovies[index].voteAverage ?? 0,
-            movieName: popularMovies[index].title ?? "",
-            textForVotes: popularMovies[index].voteCount ?? 0,
-            heightForImage: kSP220x,
-            widthForImage: kSP200x,
-          );
-        },
-      ),
-    );
+    return Selector<HomePageBloc, ScrollController>(
+        selector: (
+          _,
+          bloc,
+        ) =>
+            bloc.controllerForPopularMovie,
+        builder: (_, controller, __) => SizedBox(
+              height: kSP230x,
+              child: ListView.builder(
+                controller: controller,
+                scrollDirection: Axis.horizontal,
+                itemCount: popularMovies.length,
+                itemBuilder: (context, index) {
+                  return MovieNameAndRatingView(
+                    movieId: popularMovies[index].id ?? 0,
+                    heightForColorOpacity: kSP230x,
+                    imageURL: popularMovies[index].posterPath ?? '',
+                    textForRating: popularMovies[index].voteAverage ?? 0,
+                    movieName: popularMovies[index].title ?? "",
+                    textForVotes: popularMovies[index].voteCount ?? 0,
+                    heightForImage: kSP220x,
+                    widthForImage: kSP200x,
+                  );
+                },
+              ),
+            ));
   }
 }
 

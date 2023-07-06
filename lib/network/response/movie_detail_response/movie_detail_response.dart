@@ -4,7 +4,7 @@ import 'package:movie_app_project_test/data/vos/production_companies_vo/producti
 import '../../../constant/hive_constant.dart';
 import '../../../data/vos/genres_vo/genres_vo.dart';
 import '../../../data/vos/production_countries_vo/production_countries_vo.dart';
-import '../../../data/vos/spocken_languages_vo/spoken_languages_vo.dart';
+import '../../../data/vos/spoken_languages_vo/spoken_languages_vo.dart';
 
 part 'movie_detail_response.g.dart';
 

@@ -6,7 +6,7 @@ import '../../constant/api_constant.dart';
 import '../../constant/colors.dart';
 import '../../constant/dimens.dart';
 import '../../constant/strings.dart';
-import '../../data/vos/actor_result_vo/actor_result_vo.dart';
+import '../../data/vos/known_for_vo/known_for_vo.dart';
 import '../../network/response/actor_detail_response/actor_detail_response.dart';
 import '../../widgets/back_arrow_icon_widget.dart';
 import '../../widgets/easy_text_widget.dart';
@@ -18,8 +18,9 @@ import '../../widgets/textAndMyDivider_widget.dart';
 class ActorDetailItemView extends StatelessWidget {
   const ActorDetailItemView({
     Key? key,
+    required this.knownForMovieList,
   }) : super(key: key);
-
+  final List<KnownForVO> knownForMovieList;
   @override
   Widget build(BuildContext context) {
     return Selector<ActorDetailPageBloc, ActorDetailResponse?>(
@@ -48,7 +49,9 @@ class ActorDetailItemView extends StatelessWidget {
                 children: [
                   BiographyItemView(getActorDetail: bloc),
                   MoreInformationItemView(actorDetail: bloc),
-                  const KnownForItemView()
+                  KnownForItemView(
+                    movieList: knownForMovieList,
+                  )
                 ],
               )),
             ));
@@ -115,15 +118,14 @@ class MoreInformationItemView extends StatelessWidget {
 class KnownForItemView extends StatelessWidget {
   const KnownForItemView({
     Key? key,
+    required this.movieList,
   }) : super(key: key);
-
+  final List<KnownForVO> movieList;
   @override
   Widget build(BuildContext context) {
-    return Selector<ActorDetailPageBloc, List<ActorResultsVO>?>(
-        selector: (_, bloc) => bloc.movieList,
-        builder: (_, bloc, __) => (bloc == null)
-            ? const IsLoadingWidget()
-            : KnownForView(movieList: bloc));
+    return (movieList.isEmpty)
+        ? const IsLoadingWidget()
+        : KnownForView(movieList: movieList);
   }
 }
 
@@ -132,7 +134,7 @@ class KnownForView extends StatelessWidget {
     Key? key,
     required this.movieList,
   }) : super(key: key);
-  final List<ActorResultsVO> movieList;
+  final List<KnownForVO> movieList;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -144,21 +146,20 @@ class KnownForView extends StatelessWidget {
           child: TitleTextAndMyDividerWidget(titleText: kKnownForText),
         ),
         SizedBox(
-          height: kSP300x,
+          height: kSP230x,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 3,
+            itemCount: movieList.length,
             itemBuilder: (context, index) {
               return MovieNameAndRatingView(
-                movieId: movieList[index].knownFor?[index].id ?? 0,
+                movieId: movieList[index].id ?? 0,
                 heightForColorOpacity: kSP230x,
-                imageURL: movieList[index].knownFor?[index].posterPath ?? "",
-                textForRating:
-                    movieList[index].knownFor?[index].voteAverage ?? 0,
-                movieName: movieList[index].knownFor?[index].title ?? "",
-                textForVotes: movieList[index].knownFor?[index].voteCount ?? 0,
-                heightForImage: kSP300x,
-                widthForImage: kSP200x,
+                imageURL: movieList[index].posterPath ?? "",
+                textForRating: movieList[index].voteAverage ?? 0,
+                movieName: movieList[index].title ?? "",
+                textForVotes: movieList[index].voteCount ?? 0,
+                heightForImage: kSP220x,
+                widthForImage: kSP180x,
               );
             },
           ),

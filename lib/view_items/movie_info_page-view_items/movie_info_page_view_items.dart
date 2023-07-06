@@ -3,7 +3,7 @@ import 'package:movie_app_project_test/data/vos/crew_vo/hive_crew_vo.dart';
 import 'package:movie_app_project_test/data/vos/movie_vo/hive_similar_movie.dart';
 import 'package:movie_app_project_test/widgets/is_loading_widget.dart';
 import 'package:provider/provider.dart';
-import '../../bloc/movie_datail_page_bloc.dart';
+import '../../bloc/movie_detail_page_bloc.dart';
 import '../../constant/api_constant.dart';
 import '../../constant/colors.dart';
 import '../../constant/dimens.dart';

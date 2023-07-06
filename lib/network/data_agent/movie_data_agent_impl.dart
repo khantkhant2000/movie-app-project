@@ -36,7 +36,7 @@ class MovieDataAgentImpl extends MovieDataAgent {
 
   @override
   Future<List<MovieVO>?> getNowPlayingMovieList() => _api
-      .getNowPlayingResponse(kApiKey)
+      .getMovieByGenres(kApiKey)
       .asStream()
       .map((event) => event.results)
       .first;
@@ -50,15 +50,15 @@ class MovieDataAgentImpl extends MovieDataAgent {
       _api.getMovieDetailResponse(kApiKey, movieId);
 
   @override
-  Future<List<MovieVO>?> getPopularMovieList() => _api
-      .getPopularMoviesResponse(kApiKey)
+  Future<List<MovieVO>?> getPopularMovieList(int moviePage) => _api
+      .getPopularMoviesResponse(kApiKey, moviePage)
       .asStream()
       .map((event) => event.results)
       .first;
 
   @override
-  Future<List<MovieVO>?> getTopRateMovieList() => _api
-      .getTopRatedResponse(kApiKey)
+  Future<List<MovieVO>?> getTopRateMovieList(int moviePage) => _api
+      .getTopRatedResponse(kApiKey, moviePage)
       .asStream()
       .map((event) => event.results)
       .first;
@@ -87,6 +87,13 @@ class MovieDataAgentImpl extends MovieDataAgent {
   @override
   Future<List<SearchMovieResultVO>?> getSearchMovieList(String name) => _api
       .getSearchMovieResponse(kApiKey, name)
+      .asStream()
+      .map((event) => event.results)
+      .first;
+
+  @override
+  Future<List<MovieVO>?> getMovieByGenres(int genresID) => _api
+      .getMovieByGenresResponse(kApiKey, genresID)
       .asStream()
       .map((event) => event.results)
       .first;

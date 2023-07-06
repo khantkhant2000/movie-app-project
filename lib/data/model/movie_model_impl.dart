@@ -2,6 +2,7 @@ import 'package:movie_app_project_test/data/model/movie_model.dart';
 import 'package:movie_app_project_test/data/vos/cast-_vo/cast_vo.dart';
 import 'package:movie_app_project_test/data/vos/crew_vo/crew_vo.dart';
 import 'package:movie_app_project_test/data/vos/crew_vo/hive_crew_vo.dart';
+import 'package:movie_app_project_test/data/vos/movie_vo/hive_movie_by_genres_id.dart';
 import 'package:movie_app_project_test/data/vos/movie_vo/hive_similar_movie.dart';
 import 'package:movie_app_project_test/data/vos/movie_vo/result_vo.dart';
 import 'package:movie_app_project_test/data/vos/search_movie_vo/search_movie_vo.dart';
@@ -51,22 +52,24 @@ class MovieModelImpl extends MovieModel {
         }
         return value;
       });
+
+  // @override
+  // Future<List<MovieVO>?> getNowPlayingMovieList() =>
+  //     _movieDataAgent.getNowPlayingMovieList().then((value) {
+  //       if (value != null) {
+  //         var temp = value;
+  //         temp = temp.map((e) {
+  //           e.isGetNowPlayingMovies = true;
+  //           return e;
+  //         }).toList();
+  //         _movieDAO.saveForMovieList(temp);
+  //       }
+  //       return value;
+  //     });
+
   @override
-  Future<List<MovieVO>?> getNowPlayingMovieList() =>
-      _movieDataAgent.getNowPlayingMovieList().then((value) {
-        if (value != null) {
-          var temp = value;
-          temp = temp.map((e) {
-            e.isGetNowPlayingMovies = true;
-            return e;
-          }).toList();
-          _movieDAO.saveForMovieList(temp);
-        }
-        return value;
-      });
-  @override
-  Future<List<MovieVO>?> getPopularMovieList() =>
-      _movieDataAgent.getPopularMovieList().then((value) {
+  Future<List<MovieVO>?> getPopularMovieList(int moviePage) =>
+      _movieDataAgent.getPopularMovieList(moviePage).then((value) {
         if (value != null) {
           var temp = value;
           temp = temp.map((e) {
@@ -79,8 +82,8 @@ class MovieModelImpl extends MovieModel {
       });
 
   @override
-  Future<List<MovieVO>?> getTopRateMovieList() =>
-      _movieDataAgent.getTopRateMovieList().then((value) {
+  Future<List<MovieVO>?> getTopRateMovieList(int moviePage) =>
+      _movieDataAgent.getTopRateMovieList(moviePage).then((value) {
         if (value != null) {
           var temp = value;
           temp = temp.map((e) {
@@ -106,6 +109,22 @@ class MovieModelImpl extends MovieModel {
         }
         return value;
       });
+  @override
+  Future<List<MovieVO>?> getMovieByGenres(int genresID) =>
+      _movieDataAgent.getMovieByGenres(genresID).then((value) {
+        if (value != null) {
+          var temp = value;
+          temp = temp.map((e) {
+            e.isGetMovieByGenres = true;
+            return e;
+          }).toList();
+          HiveMovieByGenresIDVO hiveMovieByGenresID =
+              HiveMovieByGenresIDVO(value);
+          _movieDAO.saveForGetMovieByGenresID(genresID, hiveMovieByGenresID);
+        }
+        return value;
+      });
+
   @override
   Future<List<SearchMovieResultVO>?> getSearchMovie(String name) =>
       _movieDataAgent.getSearchMovieList(name);
@@ -164,11 +183,11 @@ class MovieModelImpl extends MovieModel {
       .startWith(_genresDAO.getGenresListFromDataBaseStream())
       .map((event) => _genresDAO.getGenresListFromDataBase());
 
-  @override
-  Stream<List<MovieVO>?> getNowPlayingMovieListFormDataBase() => _movieDAO
-      .watchMovieBox()
-      .startWith(_movieDAO.getNowPlayingMovieListFromDataBaseStream())
-      .map((event) => _movieDAO.getNowPlayingMovieListFromDataBase());
+  // @override
+  // Stream<List<MovieVO>?> getNowPlayingMovieListFormDataBase() => _movieDAO
+  //     .watchMovieBox()
+  //     .startWith(_movieDAO.getMovieListByGenresFromDataBaseStream())
+  //     .map((event) => _movieDAO.getMovieListByGenresFromDataBase());
 
   @override
   Stream<List<MovieVO>?> getPopularMovieListFormDataBase() => _movieDAO
@@ -224,4 +243,11 @@ class MovieModelImpl extends MovieModel {
               _actorDetailDAO.getActorDetailFromDataBaseStreamByID(actorID))
           .map((event) =>
               _actorDetailDAO.getActorDetailFromDataBaseByID(actorID));
+
+  @override
+  Stream<HiveMovieByGenresIDVO?> getMovieByGenresIDFromDataBase(int genresID) =>
+      _movieDAO
+          .watchMovieBox()
+          .startWith(_movieDAO.getMovieByGenresIDFromDataBaseStream(genresID))
+          .map((event) => _movieDAO.getMovieByGenresIDFormDataBase(genresID));
 }

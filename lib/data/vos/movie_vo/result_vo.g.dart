@@ -35,13 +35,14 @@ class MovieVOAdapter extends TypeAdapter<MovieVO> {
       isPopularMovies: fields[15] as bool?,
       isSimilarMovies: fields[17] as bool?,
       isTopRatedMovies: fields[16] as bool?,
+      isGetMovieByGenres: fields[18] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, MovieVO obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.adult)
       ..writeByte(1)
@@ -77,7 +78,9 @@ class MovieVOAdapter extends TypeAdapter<MovieVO> {
       ..writeByte(16)
       ..write(obj.isTopRatedMovies)
       ..writeByte(17)
-      ..write(obj.isSimilarMovies);
+      ..write(obj.isSimilarMovies)
+      ..writeByte(18)
+      ..write(obj.isGetMovieByGenres);
   }
 
   @override
@@ -114,6 +117,7 @@ MovieVO _$MovieVOFromJson(Map<String, dynamic> json) => MovieVO(
       isPopularMovies: json['isPopularMovies'] as bool? ?? false,
       isSimilarMovies: json['isSimilarMovies'] as bool? ?? false,
       isTopRatedMovies: json['isTopRatedMovies'] as bool? ?? false,
+      isGetMovieByGenres: json['isGetMovieByGenres'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$MovieVOToJson(MovieVO instance) => <String, dynamic>{
@@ -135,4 +139,5 @@ Map<String, dynamic> _$MovieVOToJson(MovieVO instance) => <String, dynamic>{
       'isPopularMovies': instance.isPopularMovies,
       'isTopRatedMovies': instance.isTopRatedMovies,
       'isSimilarMovies': instance.isSimilarMovies,
+      'isGetMovieByGenres': instance.isGetMovieByGenres,
     };

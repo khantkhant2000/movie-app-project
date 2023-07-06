@@ -124,10 +124,11 @@ class SearchMovieListView extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(bottom: kSP12x),
             child: SizedBox(
-              height: kSP90x,
+              height: kSP80x,
               child: Card(
                   color: kSearchBarBackgroundColor,
                   child: ListTile(
+                    contentPadding: const EdgeInsets.only(left: 0, right: 10),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => MovieDetailPage(
@@ -139,7 +140,8 @@ class SearchMovieListView extends StatelessWidget {
                     ),
                     title: Text(
                       searchMovieList[index].title ?? '',
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      style: const TextStyle(
+                          color: Colors.white, fontSize: kSP14x),
                     ),
                     subtitle: Text((searchMovieList[index].overview ?? ''),
                         style: const TextStyle(
@@ -151,8 +153,8 @@ class SearchMovieListView extends StatelessWidget {
                       color: kDateColorForSearchMovies,
                       child: Center(
                         child: EasyText(
-                          text: (searchMovieList[index].releaseDate ?? "")
-                              .substring(0, 4),
+                          text: (searchMovieList[index].getReleaseData(
+                              searchMovieList[index].releaseDate)),
                         ),
                       ),
                     ),

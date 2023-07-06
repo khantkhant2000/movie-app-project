@@ -15,8 +15,8 @@ class SearchMoviePageBloc extends ChangeNotifier {
       if (value != null) {
         searchMovieList = value;
       }
-      notifyListeners();
     });
+    notifyListeners();
   }
 
   @override

@@ -15,6 +15,7 @@ const kHiveTypeHiveCastVO = 13;
 const kHiveTypeHiveCrewVO = 14;
 const kHiveTypeHiveSimilarMovieVO = 15;
 const kHiveTypeHiveKnownForMovieVO = 16;
+const kHiveTypeGetMovieByGenresID = 17;
 
 /// Box name
 const kBoxNameForGenres = "BoxNameForGenres";
@@ -30,3 +31,4 @@ const kBoxNameForActorDetail = "kBoxNameForActorDetail";
 const kBoxNameForSearchMovie = "kBoxNameForSearchMovie";
 const kBoxNameForHiveSimilarMovieVO = "kBoxNameForHiveSimilarMovieVO";
 const kBoxNameForHiveKnownForMovieVO = "kBoxNameForHiveKnownForMovieVO";
+const kBoxNameForHiveGetMovieByGenresID = "kBoxNameForHiveGetMovieByGenresID";

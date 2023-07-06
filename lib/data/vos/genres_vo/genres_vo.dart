@@ -25,4 +25,16 @@ class GenresVO {
 
   factory GenresVO.fromJson(Map<String, dynamic> json) =>
       _$GenresVOFromJson(json);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GenresVO &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          isSelected == other.isSelected;
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode ^ isSelected.hashCode;
 }

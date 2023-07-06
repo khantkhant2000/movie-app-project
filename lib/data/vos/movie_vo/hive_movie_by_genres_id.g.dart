@@ -1,32 +1,32 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'hive_similar_movie.dart';
+part of 'hive_movie_by_genres_id.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class HiveSimilarMovieVOAdapter extends TypeAdapter<HiveSimilarMovieVO> {
+class HiveMovieByGenresIDAdapter extends TypeAdapter<HiveMovieByGenresIDVO> {
   @override
-  final int typeId = 15;
+  final int typeId = 17;
 
   @override
-  HiveSimilarMovieVO read(BinaryReader reader) {
+  HiveMovieByGenresIDVO read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return HiveSimilarMovieVO(
+    return HiveMovieByGenresIDVO(
       (fields[0] as List?)?.cast<MovieVO>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, HiveSimilarMovieVO obj) {
+  void write(BinaryWriter writer, HiveMovieByGenresIDVO obj) {
     writer
       ..writeByte(1)
       ..writeByte(0)
-      ..write(obj.similarMovieList);
+      ..write(obj.getMovieByGenresID);
   }
 
   @override
@@ -35,7 +35,7 @@ class HiveSimilarMovieVOAdapter extends TypeAdapter<HiveSimilarMovieVO> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is HiveSimilarMovieVOAdapter &&
+      other is HiveMovieByGenresIDAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -44,14 +44,16 @@ class HiveSimilarMovieVOAdapter extends TypeAdapter<HiveSimilarMovieVO> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-HiveSimilarMovieVO _$HiveSimilarMovieVOFromJson(Map<String, dynamic> json) =>
-    HiveSimilarMovieVO(
-      (json['similarMovieList'] as List<dynamic>?)
+HiveMovieByGenresIDVO _$HiveMovieByGenresIDFromJson(
+        Map<String, dynamic> json) =>
+    HiveMovieByGenresIDVO(
+      (json['getMovieByGenresID'] as List<dynamic>?)
           ?.map((e) => MovieVO.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$HiveSimilarMovieVOToJson(HiveSimilarMovieVO instance) =>
+Map<String, dynamic> _$HiveMovieByGenresIDToJson(
+        HiveMovieByGenresIDVO instance) =>
     <String, dynamic>{
-      'similarMovieList': instance.similarMovieList,
+      'getMovieByGenresID': instance.getMovieByGenresID,
     };

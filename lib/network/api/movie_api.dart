@@ -7,6 +7,7 @@ import '../../constant/api_constant.dart';
 import '../response/actor_response/actor_response.dart';
 import '../response/credits_response/get_credits_response.dart';
 import '../response/genres_response/genres_response.dart';
+import '../response/get_movie_by_genres_response/get_movie_by_genres_response.dart';
 import '../response/movie_detail_response/movie_detail_response.dart';
 import '../response/now_playing_response/now_playing_response.dart';
 import '../response/popular_movies_response/popular_movies_response.dart';
@@ -24,18 +25,18 @@ abstract class MovieAPI {
   );
 
   @GET(kGetNowPlayingEndPoint)
-  Future<NowPlayingResponse> getNowPlayingResponse(
+  Future<NowPlayingResponse> getMovieByGenres(
     @Query(kQueryParamsApiKey) String apiKey,
   );
 
   @GET(kGetPopularMoviesEndPoint)
   Future<PopularMoviesResponse> getPopularMoviesResponse(
-    @Query(kQueryParamsApiKey) String apiKey,
-  );
+      @Query(kQueryParamsApiKey) String apiKey,
+      @Query(kQueryParamMoviePage) int moviePage);
   @GET(kGetTopRatedMoviesEndPoint)
   Future<TopRatedResponse> getTopRatedResponse(
-    @Query(kQueryParamsApiKey) String apiKey,
-  );
+      @Query(kQueryParamsApiKey) String apiKey,
+      @Query(kQueryParamMoviePage) int moviePage);
 
   @GET(kGetActorsEndPoint)
   Future<ActorResponse> getActorsResponse(
@@ -67,5 +68,11 @@ abstract class MovieAPI {
   Future<SearchMovieResponse> getSearchMovieResponse(
     @Query(kQueryParamsApiKey) String apiKey,
     @Query(kQueryParamsApiKeyForSearch) String movieName,
+  );
+
+  @GET(kGetMovieByGenresEndPoint)
+  Future<GetMovieByGenresResponse> getMovieByGenresResponse(
+    @Query(kQueryParamsApiKey) String apiKey,
+    @Query(kQueryParamWithGenres) int genresID,
   );
 }
